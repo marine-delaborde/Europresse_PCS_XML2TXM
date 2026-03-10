@@ -3,7 +3,7 @@ Prétraitements pour passer d'un corpus XML/XTZ récupéré depuis Europresse av
 Plusieurs fonctionnalités peuvent être appliquées à un répertoire qui contient les fichiers XML : 
 - Nettoyage : il y a parfois des balises <b> et </b> dans l'attribut title de l'élément text (vu avec Sud_Ouest_auteurinconnu)
 - Ajouter un attribut : pour faire un corpus partitionné selon des critères autres que ceux qui sont présents en attribut de text (source, author, title, date), on peut récolter des sous-corpus et y ajouter l'attribut qui correspond (ex : couverture, tonalité, pays, langue, etc.).
-- Date : la date est au format aaaa/mm/dd, on peut aussi ajouter un attribut date_annee (yyyy) et un attribut date_mois (yyyy-mm) pour les corpus dont la couverture temporelle est étendue. 
+- Date : la date est au format aaaa/mm/dd, on peut aussi ajouter un attribut annee (yyyy) et un attribut mois (yyyy-mm) pour les corpus dont la couverture temporelle est étendue. 
 
 03/2026
 Marine Delaborde
@@ -18,7 +18,7 @@ repertoire_xml = Path("/chemin/vers/rep_XML")
 # Fonctionnalités du script : oui ou non ?
 ajouter_attribut = True # ou False
 nettoyer_titre = True # ou False
-changer_date = True # ou False | Cela revient à ajouter deux attibuts : date_mois et date_annee
+changer_date = True # ou False | Cela revient à ajouter deux attibuts : mois et annee
 
 # Attribut à ajouter à la fin de l'élément text 
 new_attribut_nom = 'couverture'
@@ -52,13 +52,13 @@ def add_attribut(match):
 	if ajouter_attribut and not patron_new_attribut.search(debut_balise_text): # Si on veut ajouter un nouvel attribut et qu'il n'existe pas déjà dans la balise text
 		attributs.append(new_attribut) # Ajoute le nouvel attribut à la liste
 		
-	if changer_date and not patron_new_attribut.search(debut_balise_text): # Si on veut modifier les dates et que les attributs date_annee et date_mois ne sont pas déjà dans text
-		if 'date_annee=' not in debut_balise_text and 'date_mois=' not in debut_balise_text:
+	if changer_date and not patron_new_attribut.search(debut_balise_text): # Si on veut modifier les dates et que les attributs annee et mois ne sont pas déjà dans text
+		if 'annee=' not in debut_balise_text and 'mois=' not in debut_balise_text:
 			date_match = patron_date.search(debut_balise_text) # On les cherche dans la balise text
 			if date_match: # Si on match le bon format
 				yyyy, mm, dd = date_match.groups() # On récupère les éléments de la date dans des variables différentes
-				attributs.append(f'date_annee="{yyyy}"')
-				attributs.append(f'date_mois="{yyyy}-{mm}"')
+				attributs.append(f'annee="{yyyy}"')
+				attributs.append(f'mois="{yyyy}-{mm}"')
 	
 	if attributs: #S'il y a des attributs dans la liste
 		return f'{debut_balise_text} {" ".join(attributs)}>'
