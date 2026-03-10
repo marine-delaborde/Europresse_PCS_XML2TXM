@@ -13,24 +13,23 @@ from pathlib import Path
 import re
 
 # Chemin vers le répertoire qui contient les fichiers XML
-repertoire_xml = Path("/chemin/vers/rep_XML")
+#repertoire_xml = Path("/chemin/vers/rep_XML")
 
 # Fonctionnalités du script : oui ou non ?
 ajouter_attribut = True # ou False
 nettoyer_titre = True # ou False
 changer_date = True # ou False | Cela revient à ajouter deux attibuts : mois et annee
 
-# Attribut à ajouter à la fin de l'élément text 
-new_attribut_nom = 'couverture'
-new_attribut_valeur = 'nationale'
-#new_attribut_valeur = 'régionale'
-new_attribut = f'{new_attribut_nom}="{new_attribut_valeur}"'
+# Liste d'attributs à ajouter à la fin de l'élément text : ajouter autant de lignes que d'attributs souhaités
+new_attributs = {
+	"couverture":"nationale", 
+	"langue":"fra"
+}
 
 # Patrons regex
 patron_text = re.compile(r'(<text\b[^>]*?)>') # Toute la balise text
 patron_title = re.compile(r'title="([^"\n]*)"') # Juste l'attribut title
 patron_balises = re.compile(r'</?[bi]>') # Balises à supprimer <b>, </b>, <i> et </i>
-patron_new_attribut = re.compile(rf'\b{new_attribut_nom}\s*=') # Nom du nouvel attribut suivi de =
 patron_date = re.compile(r'date="(\d{4})-(\d{2})-(\d{2})"') # Date de publication
 
 def clean_title(match):
@@ -49,11 +48,15 @@ def add_attribut(match):
 	debut_balise_text = match.group(1) # Balise text dans le chevron fermant
 	attributs = [] # Liste des attibuts à ajouter
 	
-	if ajouter_attribut and not patron_new_attribut.search(debut_balise_text): # Si on veut ajouter un nouvel attribut et qu'il n'existe pas déjà dans la balise text
-		attributs.append(new_attribut) # Ajoute le nouvel attribut à la liste
+	if ajouter_attribut: # Si on veut ajouter des attributs
+		for new_attribut_nom,new_attribut_valeur in new_attributs.items(): # Pour chaque attribut de la liste (même si c'est une liste de 1)
+			new_attribut = f'{new_attribut_nom}="{new_attribut_valeur}"' # Format de l'attribut à coller dans le fichier de sortie
+			patron_new_attribut = re.compile(rf'\b{new_attribut_nom}\s*=') # Nom du nouvel attribut suivi de =
+			if not patron_new_attribut.search(debut_balise_text): # S'il n'existe pas déjà dans la balise text
+				attributs.append(new_attribut) # Ajoute le nouvel attribut à la liste
 		
-	if changer_date and not patron_new_attribut.search(debut_balise_text): # Si on veut modifier les dates et que les attributs annee et mois ne sont pas déjà dans text
-		if 'annee=' not in debut_balise_text and 'mois=' not in debut_balise_text:
+	if changer_date: # Si on veut modifier les dates 
+		if 'annee=' not in debut_balise_text and 'mois=' not in debut_balise_text: #et que les attributs annee et mois ne sont pas déjà dans text
 			date_match = patron_date.search(debut_balise_text) # On les cherche dans la balise text
 			if date_match: # Si on match le bon format
 				yyyy, mm, dd = date_match.groups() # On récupère les éléments de la date dans des variables différentes
