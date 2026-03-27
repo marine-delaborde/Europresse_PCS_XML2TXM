@@ -13,7 +13,7 @@ from pathlib import Path
 import re
 
 # Chemin vers le répertoire qui contient les fichiers XML
-#repertoire_xml = Path("/chemin/vers/rep_XML")
+repertoire_xml = Path("/chemin/vers/rep_XML")
 
 # Fonctionnalités du script : oui ou non ?
 ajouter_attribut = True # ou False
