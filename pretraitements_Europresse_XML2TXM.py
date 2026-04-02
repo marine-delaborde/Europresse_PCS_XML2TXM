@@ -14,6 +14,7 @@ import re
 
 # Chemin vers le répertoire qui contient les fichiers XML
 repertoire_xml = Path("/chemin/vers/rep_XML")
+#repertoire_xml = Path(r"C:Users\chemin\vers\rep_XML") #pour Windows
 
 # Fonctionnalités du script : oui ou non ?
 ajouter_attribut = True # ou False
@@ -111,7 +112,7 @@ for xml_file in repertoire_xml.glob("*.xml"):
 if nettoyer_titre:
 	print(f"Fichiers nettoyés : {nb_clean}")		
 if ajouter_attribut:
-	print(f"Attribut {new_attribut} ajouté dans {nb_attr} fichiers")
+	print(f"Attribut {new_attributs} ajouté dans {nb_attr} fichiers")
 if changer_date:
 	print(f"Dates modifiées dans {nb_date} fichiers")		
 	
