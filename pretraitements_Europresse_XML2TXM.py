@@ -22,6 +22,7 @@ nettoyer_titre = True # ou False
 changer_date = True # ou False | Cela revient à ajouter deux attibuts : mois et annee
 
 # Liste d'attributs à ajouter à la fin de l'élément text : ajouter autant de lignes que d'attributs souhaités
+# Attention : ne pas metttre de _ ou d'accent dans les noms des attributs
 new_attributs = {
 	"couverture":"nationale", 
 	"langue":"fra"
